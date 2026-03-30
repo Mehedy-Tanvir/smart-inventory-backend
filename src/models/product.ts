@@ -1,15 +1,15 @@
-import { Schema, model, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IProduct extends Document {
   name: string;
-  categoryId: Schema.Types.ObjectId;
+  categoryId: mongoose.Types.ObjectId;
   price: number;
   stock: number;
   minStockThreshold: number;
   status: "Active" | "Out of Stock";
 }
 
-const ProductSchema = new Schema<IProduct>(
+const ProductSchema: Schema = new Schema(
   {
     name: { type: String, required: true },
     categoryId: {
@@ -19,7 +19,7 @@ const ProductSchema = new Schema<IProduct>(
     },
     price: { type: Number, required: true },
     stock: { type: Number, required: true },
-    minStockThreshold: { type: Number, default: 5 },
+    minStockThreshold: { type: Number, required: true },
     status: {
       type: String,
       enum: ["Active", "Out of Stock"],
@@ -29,4 +29,4 @@ const ProductSchema = new Schema<IProduct>(
   { timestamps: true },
 );
 
-export const Product = model<IProduct>("Product", ProductSchema);
+export default mongoose.model<IProduct>("Product", ProductSchema);
