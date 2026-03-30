@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./config/db";
+import authRoutes from "./routes/authRoutes";
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ app.use(express.json());
 app.get("/", (req: Request, res: Response) => {
   res.send("Smart Inventory Backend Running");
 });
+
+app.use("/api/auth", authRoutes);
 
 // Connect DB and start server
 const PORT = process.env.PORT || 5000;
