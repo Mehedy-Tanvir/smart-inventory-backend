@@ -4,7 +4,7 @@ import {
   createOrderService,
   getOrderByIdService,
   getOrdersService,
-} from "../services/order";
+} from "../services/orderServices";
 
 // CREATE
 export const createOrder = async (req: any, res: any) => {

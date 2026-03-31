@@ -1,6 +1,7 @@
 import Product from "../models/product";
 import { Order } from "../models/order";
 import { RestockQueue } from "../models/restock_queue";
+import { handleRestockQueue } from "./restockServices";
 
 // constants to avoid string bugs
 export const ORDER_STATUS = {
@@ -82,16 +83,7 @@ export const confirmOrderService = async (orderId: string) => {
     }
 
     await product.save();
-
-    // Restock trigger
-    if (product.stock < product.minStockThreshold) {
-      await RestockQueue.create({
-        productId: product._id,
-        currentStock: product.stock,
-        priority:
-          product.stock === 0 ? "High" : product.stock < 5 ? "Medium" : "Low",
-      });
-    }
+    await handleRestockQueue(product._id.toString());
   }
 
   order.status = ORDER_STATUS.CONFIRMED;
