@@ -1,6 +1,8 @@
 import { RestockQueue } from "../models/restock_queue";
 import Product from "../models/product";
 import { calculatePriority } from "../utils/calculatePriority";
+import { logActivity } from "./activityLogServices";
+import product from "../models/product";
 
 export const handleRestockQueue = async (productId: string) => {
   const product = await Product.findById(productId);
@@ -25,6 +27,7 @@ export const handleRestockQueue = async (productId: string) => {
         currentStock: product.stock,
         priority,
       });
+      await logActivity(`Product "${product.name}" added to restock queue`);
     }
   }
 };
@@ -51,6 +54,7 @@ export const restockProductService = async (
   }
 
   await product.save();
+  await logActivity(`Product "${product.name}" restocked`);
 
   // Remove or update queue
   if (product.stock >= product.minStockThreshold) {
@@ -62,5 +66,8 @@ export const restockProductService = async (
   return product;
 };
 export const removeFromQueueService = async (productId: string) => {
+  if (product) {
+    await logActivity(`Product "${product.name}" removed from restock queue`);
+  }
   return await RestockQueue.findOneAndDelete({ productId });
 };

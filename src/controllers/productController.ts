@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import category from "../models/category";
 import Product from "../models/product";
+import { logActivity } from "../services/activityLogServices";
 
 // Create product
 export const createProduct = async (req: Request, res: Response) => {
@@ -22,6 +23,8 @@ export const createProduct = async (req: Request, res: Response) => {
       status,
     });
     await product.save();
+
+    await logActivity(`Product "${product.name}" created`);
 
     res.status(201).json(product);
   } catch (error) {
@@ -47,6 +50,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     product.status = product.stock <= 0 ? "Out of Stock" : "Active";
 
     await product.save();
+    await logActivity(`Product "${product.name}" updated`);
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

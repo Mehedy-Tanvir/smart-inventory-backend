@@ -7,6 +7,7 @@ import categoryRoutes from "./routes/categoryRoutes";
 import productRoutes from "./routes/productRoutes";
 import orderRoutes from "./routes/orderRoutes";
 import restockRoutes from "./routes/restockRoutes";
+import activityLogRoutes from "./routes/activityLogRoutes";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/restock", restockRoutes);
+app.use("/api/activity", activityLogRoutes);
 
 // Connect DB and start server
 const PORT = process.env.PORT || 5000;

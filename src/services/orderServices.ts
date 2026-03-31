@@ -2,6 +2,7 @@ import Product from "../models/product";
 import { Order } from "../models/order";
 import { RestockQueue } from "../models/restock_queue";
 import { handleRestockQueue } from "./restockServices";
+import { logActivity } from "./activityLogServices";
 
 // constants to avoid string bugs
 export const ORDER_STATUS = {
@@ -56,6 +57,8 @@ export const createOrderService = async (payload: any) => {
     status: ORDER_STATUS.PENDING,
   });
 
+  await logActivity(`Order created for ${order.customerName}`);
+
   return order;
 };
 
@@ -84,10 +87,12 @@ export const confirmOrderService = async (orderId: string) => {
 
     await product.save();
     await handleRestockQueue(product._id.toString());
+    await logActivity(`Stock updated for "${product.name}"`);
   }
 
   order.status = ORDER_STATUS.CONFIRMED;
   await order.save();
+  await logActivity(`Order ${order._id} confirmed`);
 
   return order;
 };
@@ -121,6 +126,8 @@ export const cancelOrderService = async (orderId: string) => {
 
   order.status = ORDER_STATUS.CANCELLED;
   await order.save();
+
+  await logActivity(`Order ${order._id} cancelled`);
 
   return order;
 };
