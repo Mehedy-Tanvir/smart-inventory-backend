@@ -1,36 +1,25 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, Types } from "mongoose";
 
-export interface IOrderItem {
-  productId: Schema.Types.ObjectId;
-  quantity: number;
-  price: number;
+export interface IRestockQueue extends Document {
+  productId: Types.ObjectId;
+  currentStock: number;
+  priority: "Low" | "Medium" | "High";
 }
 
-export interface IOrder extends Document {
-  customerName: string;
-  products: IOrderItem[];
-  totalPrice: number;
-  status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
-}
-
-const OrderItemSchema = new Schema<IOrderItem>({
-  productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-  quantity: { type: Number, required: true },
-  price: { type: Number, required: true },
-});
-
-const OrderSchema = new Schema<IOrder>(
+const RestockQueueSchema = new Schema<IRestockQueue>(
   {
-    customerName: { type: String, required: true },
-    products: [OrderItemSchema],
-    totalPrice: { type: Number, required: true },
-    status: {
+    productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    currentStock: { type: Number, required: true },
+    priority: {
       type: String,
-      enum: ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"],
-      default: "Pending",
+      enum: ["Low", "Medium", "High"],
+      default: "Low",
     },
   },
   { timestamps: true },
 );
 
-export const Order = model<IOrder>("Order", OrderSchema);
+export const RestockQueue = model<IRestockQueue>(
+  "RestockQueue",
+  RestockQueueSchema,
+);
