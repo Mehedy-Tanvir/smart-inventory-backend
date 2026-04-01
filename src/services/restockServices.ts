@@ -65,9 +65,15 @@ export const restockProductService = async (
 
   return product;
 };
-export const removeFromQueueService = async (productId: string) => {
-  if (product) {
-    await logActivity(`Product "${product.name}" removed from restock queue`);
-  }
-  return await RestockQueue.findOneAndDelete({ productId });
+export const removeFromQueueService = async (restockId: string) => {
+  const restockEntry =
+    await RestockQueue.findById(restockId).populate("productId");
+
+  await RestockQueue.deleteOne({ _id: restockId });
+
+  const productName =
+    (restockEntry?.productId as any)?.name || "Unknown Product";
+  await logActivity(`Restock entry of ${productName} removed from queue`);
+
+  return restockEntry?.productId;
 };

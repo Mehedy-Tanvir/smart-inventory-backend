@@ -31,11 +31,10 @@ export const restockProduct = async (req: Request, res: Response) => {
 
 export const removeFromQueue = async (req: Request, res: Response) => {
   try {
-    const productId = Array.isArray(req.params.productId)
-      ? req.params.productId[0]
-      : req.params.productId;
+    const productId = req.params.productId;
+    console.log({ productId });
 
-    await removeFromQueueService(productId);
+    await removeFromQueueService(productId as string);
 
     res.json({ message: "Removed from restock queue" });
   } catch (error: any) {
