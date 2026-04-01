@@ -4,40 +4,44 @@ import Product from "../models/product";
 export const getDashboardStats = async () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
-  // Total orders today
-  const totalOrdersToday = await Order.countDocuments({
-    createdAt: { $gte: today },
-  });
-
-  // Revenue today (only confirmed, shipped, delivered)
-  const revenueTodayAgg = await Order.aggregate([
+  const dashboardData = await Order.aggregate([
     {
-      $match: {
-        createdAt: { $gte: today },
-        status: { $in: ["Confirmed", "Shipped", "Delivered"] },
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        total: { $sum: "$totalPrice" },
+      $facet: {
+        totalOrdersToday: [
+          {
+            $match: { createdAt: { $gte: today } },
+          },
+          { $count: "count" },
+        ],
+        revenueToday: [
+          {
+            $match: {
+              createdAt: { $gte: today },
+              status: { $in: ["Confirmed", "Shipped", "Delivered"] },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: { $sum: "$totalPrice" },
+            },
+          },
+        ],
+        pendingOrders: [{ $match: { status: "Pending" } }, { $count: "count" }],
+        completedOrders: [
+          { $match: { status: "Delivered" } },
+          { $count: "count" },
+        ],
       },
     },
   ]);
 
-  const revenueToday = revenueTodayAgg[0]?.total || 0;
+  const stats = dashboardData[0] || {};
 
-  // Pending vs Completed
-  const pendingOrders = await Order.countDocuments({
-    status: "Pending",
-  });
-
-  const completedOrders = await Order.countDocuments({
-    status: { $in: ["Delivered"] },
-  });
-
-  // Low stock products
+  const totalOrdersToday = stats.totalOrdersToday?.[0]?.count || 0;
+  const revenueToday = stats.revenueToday?.[0]?.total || 0;
+  const pendingOrders = stats.pendingOrders?.[0]?.count || 0;
+  const completedOrders = stats.completedOrders?.[0]?.count || 0;
   const lowStockProducts = await Product.countDocuments({
     $expr: { $lt: ["$stock", "$minStockThreshold"] },
   });
