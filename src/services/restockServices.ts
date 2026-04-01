@@ -56,12 +56,7 @@ export const restockProductService = async (
   await product.save();
   await logActivity(`Product "${product.name}" restocked`);
 
-  // Remove or update queue
-  if (product.stock >= product.minStockThreshold) {
-    await RestockQueue.findOneAndDelete({ productId });
-  } else {
-    await handleRestockQueue(productId);
-  }
+  await handleRestockQueue(productId);
 
   return product;
 };
