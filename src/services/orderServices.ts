@@ -97,6 +97,42 @@ export const confirmOrderService = async (orderId: string) => {
   return order;
 };
 
+// SHIP ORDER
+export const shipOrderService = async (orderId: string) => {
+  const order = await Order.findById(orderId);
+
+  if (!order) throw new Error("Order not found");
+
+  if (order.status !== ORDER_STATUS.CONFIRMED) {
+    throw new Error("Only confirmed orders can be shipped");
+  }
+
+  order.status = ORDER_STATUS.SHIPPED;
+  await order.save();
+
+  await logActivity(`Order ${order._id} marked as Shipped`);
+
+  return order;
+};
+
+// DELIVER ORDER
+export const deliverOrderService = async (orderId: string) => {
+  const order = await Order.findById(orderId);
+
+  if (!order) throw new Error("Order not found");
+
+  if (order.status !== ORDER_STATUS.SHIPPED) {
+    throw new Error("Only shipped orders can be delivered");
+  }
+
+  order.status = ORDER_STATUS.DELIVERED;
+  await order.save();
+
+  await logActivity(`Order ${order._id} marked as Delivered`);
+
+  return order;
+};
+
 // CANCEL ORDER
 export const cancelOrderService = async (orderId: string) => {
   const order = await Order.findById(orderId);

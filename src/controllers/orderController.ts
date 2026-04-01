@@ -2,8 +2,10 @@ import {
   cancelOrderService,
   confirmOrderService,
   createOrderService,
+  deliverOrderService,
   getOrderByIdService,
   getOrdersService,
+  shipOrderService,
 } from "../services/orderServices";
 
 // CREATE
@@ -20,6 +22,26 @@ export const createOrder = async (req: any, res: any) => {
 export const confirmOrder = async (req: any, res: any) => {
   try {
     const order = await confirmOrderService(req.params.id);
+    res.json(order);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// SHIP
+export const shipOrder = async (req: any, res: any) => {
+  try {
+    const order = await shipOrderService(req.params.id);
+    res.json(order);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// DELIVER
+export const deliverOrder = async (req: any, res: any) => {
+  try {
+    const order = await deliverOrderService(req.params.id);
     res.json(order);
   } catch (err: any) {
     res.status(400).json({ message: err.message });

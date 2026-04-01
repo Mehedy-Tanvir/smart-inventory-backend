@@ -60,8 +60,16 @@ export const updateProduct = async (req: Request, res: Response) => {
 // Fetch all products
 export const getProducts = async (req: Request, res: Response) => {
   try {
-    const products = await Product.find().populate("categoryId", "name");
-    res.json(products);
+    const products = await Product.find().populate("categoryId", "name").lean();
+
+    const formattedProducts = products.map((product) => ({
+      ...product,
+      categoryName: (product.categoryId as any)?.name || "Uncategorized",
+      categoryId: (product.categoryId as any)?._id,
+    }));
+    console.log({ formattedProducts });
+
+    res.json(formattedProducts);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
