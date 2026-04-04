@@ -114,23 +114,23 @@ A robust backend API for managing products, inventory, orders, and fulfillment w
 
 ## Project Structure
 
-src/
-├── modules/
-│ ├── auth/
-│ ├── product/
-│ ├── category/
-│ ├── order/
-│ ├── restock/
-│ ├── dashboard/
-│ ├── activity/
-│
-├── middleware/
-├── models/
-├── services/
-├── controllers/
-├── routes/
-├── utils/
-└── app.ts
+- src/
+- ├── modules/
+- │ ├── auth/
+- │ ├── product/
+- │ ├── category/
+- │ ├── order/
+- │ ├── restock/
+- │ ├── dashboard/
+- │ ├── activity/
+- │
+- ├── middleware/
+- ├── models/
+- ├── services/
+- ├── controllers/
+- ├── routes/
+- ├── utils/
+- └── app.ts
 
 ---
 
