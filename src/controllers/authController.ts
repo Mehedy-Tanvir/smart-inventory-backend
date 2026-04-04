@@ -21,7 +21,7 @@ export const signup = async (req: Request, res: Response) => {
     const user = await User.create({ email, password: hashedPassword });
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET!,
       {
         expiresIn: "1d",
@@ -78,11 +78,19 @@ export const verifyToken = async (req: Request, res: Response) => {
 
     const token = authHeader.split(" ")[1];
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+      userId: string;
+      email: string;
+      role: string;
+    };
 
     res.status(200).json({
       valid: true,
-      user: decoded,
+      user: {
+        id: decoded.userId,
+        email: decoded.email,
+        role: decoded.role,
+      },
     });
   } catch (error) {
     res.status(401).json({
