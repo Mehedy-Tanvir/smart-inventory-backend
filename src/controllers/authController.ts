@@ -67,3 +67,27 @@ export const login = async (req: Request, res: Response) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+export const verifyToken = async (req: Request, res: Response) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+
+    res.status(200).json({
+      valid: true,
+      user: decoded,
+    });
+  } catch (error) {
+    res.status(401).json({
+      valid: false,
+      message: "Invalid or expired token",
+    });
+  }
+};
