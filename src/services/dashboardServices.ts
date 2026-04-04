@@ -46,11 +46,43 @@ export const getDashboardStats = async () => {
     $expr: { $lt: ["$stock", "$minStockThreshold"] },
   });
 
+  // Weekly stats (last 7 days)
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+  sevenDaysAgo.setHours(0, 0, 0, 0);
+
+  const weeklyRaw = await Order.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: sevenDaysAgo },
+      },
+    },
+    {
+      $group: {
+        _id: { $dayOfWeek: "$createdAt" },
+        orders: { $sum: 1 },
+        revenue: { $sum: "$totalPrice" },
+      },
+    },
+  ]);
+  const daysMap = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const weeklyStats = daysMap.map((day, index) => {
+    const found = weeklyRaw.find((d) => d._id === index + 1);
+
+    return {
+      name: day,
+      orders: found?.orders || 0,
+      revenue: found?.revenue || 0,
+    };
+  });
+
   return {
     totalOrdersToday,
     revenueToday,
     pendingOrders,
     completedOrders,
     lowStockProducts,
+    weeklyStats,
   };
 };
