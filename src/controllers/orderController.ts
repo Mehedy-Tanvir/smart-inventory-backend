@@ -8,7 +8,7 @@ import {
   shipOrderService,
 } from "../services/orderServices";
 
-// CREATE
+// Create a new order
 export const createOrder = async (req: any, res: any) => {
   try {
     const order = await createOrderService(req.body);
@@ -18,7 +18,7 @@ export const createOrder = async (req: any, res: any) => {
   }
 };
 
-// CONFIRM
+// Confirm an order
 export const confirmOrder = async (req: any, res: any) => {
   try {
     const order = await confirmOrderService(req.params.id);
@@ -28,7 +28,7 @@ export const confirmOrder = async (req: any, res: any) => {
   }
 };
 
-// SHIP
+// Ship an order
 export const shipOrder = async (req: any, res: any) => {
   try {
     const order = await shipOrderService(req.params.id);
@@ -38,7 +38,7 @@ export const shipOrder = async (req: any, res: any) => {
   }
 };
 
-// DELIVER
+// Deliver an order
 export const deliverOrder = async (req: any, res: any) => {
   try {
     const order = await deliverOrderService(req.params.id);
@@ -48,7 +48,7 @@ export const deliverOrder = async (req: any, res: any) => {
   }
 };
 
-// CANCEL
+// Cancel an order
 export const cancelOrder = async (req: any, res: any) => {
   try {
     const order = await cancelOrderService(req.params.id);
@@ -58,7 +58,7 @@ export const cancelOrder = async (req: any, res: any) => {
   }
 };
 
-// GET ALL
+// Get all orders
 export const getOrders = async (_req: any, res: any) => {
   try {
     const orders = await getOrdersService();
@@ -68,7 +68,7 @@ export const getOrders = async (_req: any, res: any) => {
   }
 };
 
-// GET ONE
+// Get order by ID
 export const getOrderById = async (req: any, res: any) => {
   try {
     const order = await getOrderByIdService(req.params.id);

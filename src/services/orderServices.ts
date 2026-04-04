@@ -97,7 +97,7 @@ export const confirmOrderService = async (orderId: string) => {
   return order;
 };
 
-// SHIP ORDER
+// Ship order
 export const shipOrderService = async (orderId: string) => {
   const order = await Order.findById(orderId);
 
@@ -115,7 +115,7 @@ export const shipOrderService = async (orderId: string) => {
   return order;
 };
 
-// DELIVER ORDER
+// Deliver order
 export const deliverOrderService = async (orderId: string) => {
   const order = await Order.findById(orderId);
 
@@ -133,7 +133,7 @@ export const deliverOrderService = async (orderId: string) => {
   return order;
 };
 
-// CANCEL ORDER
+// Cancel order
 export const cancelOrderService = async (orderId: string) => {
   const order = await Order.findById(orderId);
 
@@ -168,12 +168,12 @@ export const cancelOrderService = async (orderId: string) => {
   return order;
 };
 
-// GET ALL ORDERS
+// Get all orders
 export const getOrdersService = async () => {
   return Order.find().populate("products.productId").sort({ createdAt: -1 });
 };
 
-// GET SINGLE ORDER
+// Get order by ID
 export const getOrderByIdService = async (id: string) => {
   const order = await Order.findById(id).populate("products.productId");
 
