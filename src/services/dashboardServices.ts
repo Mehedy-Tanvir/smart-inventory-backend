@@ -77,6 +77,23 @@ export const getDashboardStats = async () => {
     };
   });
 
+  // Product summary (limit 5 for dashboard)
+  const products = await Product.find({})
+    .select("name stock minStockThreshold")
+    .limit(5)
+    .lean();
+
+  const productSummary = products.map((p) => ({
+    name: p.name,
+    stock: p.stock,
+    status:
+      p.stock === 0
+        ? "Out of Stock"
+        : p.stock < p.minStockThreshold
+          ? "Low Stock"
+          : "OK",
+  }));
+
   return {
     totalOrdersToday,
     revenueToday,
@@ -84,5 +101,6 @@ export const getDashboardStats = async () => {
     completedOrders,
     lowStockProducts,
     weeklyStats,
+    productSummary,
   };
 };
